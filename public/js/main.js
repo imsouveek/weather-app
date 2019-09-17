@@ -23,7 +23,7 @@ weatherForm.addEventListener('submit', (event) => {
   }
 
   /* Fetch API for getting forecast */
-  fetch(`http://localhost:3000/api?address=${encodeURIComponent(location)}`)
+  fetch(`/api?address=${encodeURIComponent(location)}`)
   .then((response) => {
 
     /* Parse response as JSON */
