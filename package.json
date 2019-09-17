@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/app.js -e js,pug",
+    "dev": "nodemon src/www.js -e js,pug",
+    "start": "node src/www.js",
+    "cli": "node src/cli.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +16,7 @@
     "express": "^4.17.1",
     "mathjs": "^6.2.1",
     "pug": "^2.0.4",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "yargs": "^14.0.0"
   }
 }
