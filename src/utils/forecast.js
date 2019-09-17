@@ -32,7 +32,8 @@ module.exports = ({latitude, longitude}, callback) => {
     } else {
 
       /* Scenario 3: API call successful and results found */
-      callback(undefined, `It is currently ${body.currently.temperature} degrees out. There is a ${round(body.currently.precipProbability * 100, 2)}% chance of rain`);
+      const {summary, temperature, precipProbability} = body.currently;
+      callback(undefined, `${summary}. It is currently ${temperature} degrees out. There is a ${round(precipProbability * 100, 2)}% chance of rain`);
     }
   });
 }
