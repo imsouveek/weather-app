@@ -1,0 +1,21 @@
+extends ../partials/layout
+
+block title
+  h1 Weather
+
+block content
+  p Find weather forecast for location of your choice
+
+  form(action='submit')
+    input(
+      placeholder='Location'
+      type='text'
+    )
+    button Search
+
+  p#error
+
+  p#result
+
+block append footer
+  script(src="/js/main.js")
