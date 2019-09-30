@@ -7,32 +7,32 @@ const forecast = require('./utils/forecast');
 /* Start configuring web server using express */
 const app = express();
 
-/* Point server to static directory */
-app.use(express.static(path.join(__dirname, '../public')));
+/* Check for Production */
+const isProd = process.env.NODE_ENV === 'production';
 
-/* Set up view engine */
-app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, '../templates/views'));
+/* Dev specific setup */
+if (!isProd) {
 
-/* Generic handler for rendering views */
-function renderViews(req, res) {
+  /* Setup a development server with webpack configuraiton */
+  const  webpack = require('webpack');
+  const config = require('../../config/webpack.dev');
+  const compiler = webpack(config);
 
-  /* Get view name from request path */
-  let viewName = req.path.substring(1);
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackDevMw = webpackDevMiddleware(compiler, config.devServer);
+  app.use(webpackDevMw);
 
-  /* If no view name found from request path, render index */
-  if (!viewName) {
-    viewName = "index";
-  }
+  /* Need to lookup files from memory (used by dev middleware to send files) */
+  var memoryFs = webpackDevMw.fileSystem;
 
-  /* Render */
-  res.render(viewName);
-
+  /* Setup hot reloading */
+  const webpackHotMiddleware = require('webpack-hot-middleware');
+  const webpackHotMw = webpackHotMiddleware(compiler);
+  app.use(webpackHotMw);
 }
 
-app.get('/', renderViews);
-app.get('/about', renderViews);
-app.get('/help', renderViews);
+/* Point server to static directory */
+app.use(express.static(path.join(__dirname, '../dist')));
 
 /* API service to chain forecast and geocode functions */
 app.get('/api', (req, res) => {
@@ -68,9 +68,11 @@ app.get('/api', (req, res) => {
 
 /* Handler for undefined paths */
 app.get('*', (req, res) => {
-  res.render('error', {
-    msg: "Not found!"
-  });
+  if (!isProd){ 
+    res.status(404).send(memoryFs.readFileSync(path.resolve(__dirname, '../../dist/error.html'), 'utf8'))
+  } else {
+    res.sendFile(path.join(__dirname, '../../dist/error.html'))
+  }
 });
 
 /* Start port */

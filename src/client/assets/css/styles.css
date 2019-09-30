@@ -21,7 +21,7 @@ body {
 }
 
 h1 {
-  color: black;
+  color: purple;
   font-size: 48px;
   margin-bottom: 8px;
 }
@@ -59,9 +59,13 @@ input {
 
 button {
   cursor: pointer;
-  border: 1px solid #888888;
+  border: 2px solid #888888;
   background: #888888;
   color: white;
   padding: 8px;
   font-size: 16px;
+}
+
+#spacing {
+  padding: 5px;
 }
