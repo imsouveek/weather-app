@@ -29,10 +29,21 @@ if (!isProd) {
   const webpackHotMiddleware = require('webpack-hot-middleware');
   const webpackHotMw = webpackHotMiddleware(compiler);
   app.use(webpackHotMw);
+
+  /* Point server to static directory. Fallback to html extension */
+  app.use(express.static(path.join(__dirname, '../../dist'), {extensions: ['html']}));
+
+} else {
+
+  /* Production setup: Enable gzip and brotli compression with brotli being preferred option */
+  const staticMw = require('express-static-gzip');
+  app.use(staticMw(path.resolve(__dirname, "../../dist"),{
+    enableBrotli: true,
+    orderPreference: ['br'],
+    extensions: ['html']
+  }))
 }
 
-/* Point server to static directory */
-app.use(express.static(path.join(__dirname, '../dist')));
 
 /* API service to chain forecast and geocode functions */
 app.get('/api', (req, res) => {
@@ -68,6 +79,8 @@ app.get('/api', (req, res) => {
 
 /* Handler for undefined paths */
 app.get('*', (req, res) => {
+
+  /* For dev setup, we have to use memoryFs to serve error page. For prod setup, we can just serve file from dist */
   if (!isProd){ 
     res.status(404).send(memoryFs.readFileSync(path.resolve(__dirname, '../../dist/error.html'), 'utf8'))
   } else {
