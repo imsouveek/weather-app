@@ -81,7 +81,7 @@ app.get('/api', (req, res) => {
 app.get('*', (req, res) => {
 
   /* For dev setup, we have to use memoryFs to serve error page. For prod setup, we can just serve file from dist */
-  if (!isProd){ 
+  if (!isProd){
     res.status(404).send(memoryFs.readFileSync(path.resolve(__dirname, '../../dist/error.html'), 'utf8'))
   } else {
     res.sendFile(path.join(__dirname, '../../dist/error.html'))
