@@ -50,7 +50,18 @@ module.exports = {
       use: 'babel-loader'
     }, {
       test: /\.pug$/,
-      use: 'pug-loader'
+      use: [
+        {
+          loader: 'html-loader',
+          options: {
+            attrs: [
+              'img:src',
+              'link:href'
+            ]
+          }
+        },
+        'pug-html-loader'
+      ]
     }, {
       test: /\.css$/,
       use: [
@@ -70,7 +81,7 @@ module.exports = {
   },
   plugins: [
     /*
-      Clean dist folder of unused files. May consider using a simple remove command 
+      Clean dist folder of unused files. May consider using a simple remove command
       in package.json (and a git bash commandline dependency) instead
     */
     new CleanWebpackPlugin(),
